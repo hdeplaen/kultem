@@ -17,12 +17,13 @@
 %% not covered by the license above.
 
 \NeedsTeXFormat{LaTeX2e}[1994/06/01]
-\ProvidesPackage{kulsty}[2021/02/15 KU Leuven style (v0.1)]
+\ProvidesPackage{kultem}[2021/02/15 KU Leuven style (v0.1)]
 
 \let\myDate\date
 \newcommand\GoodBye[1][\bfseries]{{#1Good Bye}}
 
 %% PACKAGES
+\RequirePackage{kvoptions}
 \RequirePackage{svg}
 \RequirePackage{fancyhdr}
 \RequirePackage{titlesec}
@@ -30,15 +31,34 @@
 \RequirePackage{etoolbox}
 \RequirePackage{enumitem}
 \RequirePackage{geometry}
-\RequirePackage{color} 
+\RequirePackage{color}
 \RequirePackage[scaled]{helvet}
 \RequirePackage{sansmath}
 \RequirePackage{caption}
 \RequirePackage{titlesec}
 \RequirePackage{stackengine}
+\RequirePackage{microtype}
 
 %%GENERAL
-\geometry{a4paper,total={170mm,257mm},left=20mm,top=30mm,bottom=20mm,}
+\DeclareBoolOption[false]{binding}
+\ProcessKeyvalOptions{kultem}\relax
+
+\ifkultem@binding
+\edef\kultem@bindingoffset{12mm}
+\else
+\edef\kultem@bindingoffset{0mm}
+\fi
+
+\geometry{%
+a4paper,%
+bindingoffset=\kultem@bindingoffset,%
+left=20mm,%
+right=20mm,%
+top=35mm,%
+bottom=20mm,%
+heightrounded}
+\setlength{\fboxsep}{3pt}
+
 \newcommand*{\subtitle}[1]{\gdef\@subtitle{#1}}\newcommand*{\@subtitle}{}%
 \newcommand*{\assitant}[1]{\gdef\@assistant{#1}}\newcommand*{\@assistant}{}%
 \newcommand*{\assitants}[1]{\gdef\@assistants{#1}}\newcommand*{\@assistants}{}%
@@ -80,10 +100,6 @@
     \fill[Blue2] (current page.north west) rectangle ($(current page.north east)+(0,-1in)$);
     \node[anchor=north west, text=white, font=\Large, minimum size=1in, inner xsep=5mm, align=left] at (current page.north west) {\bf{\MakeUppercase{\@title}}\\\@subtitle};
     \node[anchor=north east, minimum size=1in, inner xsep=5mm] at (current page.north east) {\includesvg[scale=1]{kuleuven-logo.svg}};\end{tikzpicture}}
-\fancyfoot[CO]{\begin{tikzpicture}[overlay, remember picture]%
-    \fill[Blue2] (current page.south west) rectangle ($(current page.south east)+(0,.5in)$);
-    \node[anchor=south west, text=white, font=\large, minimum size=.5in, inner xsep=5mm] at (current page.south west) {\leftmark};
-    \node[anchor=south east, text=white, font=\Large, minimum size=.5in] at (current page.south east) {\thepage};\end{tikzpicture}}
 \fancyfoot[C]{\begin{tikzpicture}[overlay, remember picture]%
     \fill[Blue2] (current page.south west) rectangle ($(current page.south east)+(0,.5in)$);
     \node[anchor=south west, text=white, font=\large, minimum size=.5in, inner xsep=5mm] at (current page.south west) {\leftmark};
@@ -95,17 +111,17 @@
 \titleformat{\section}[hang]{}{}{0pt}{\noindent\def\stackalignment{l}\stackunder[0pt]{\colorbox{Blue1}{\textcolor{white}{\textbf{\LARGE \thesection \large\MakeUppercase{\space #1}}}}}{\textcolor{Blue2}{\rule{\linewidth}{2pt}}}}[]
 
 %% BOX
-\newcommand\kulbox[1]{\begin{center}\colorbox{LightBlue}{\parbox{1\textwidth}{\noindent#1}}\end{center}}
+\newcommand\kulbox[2][3pt]{\setlength{\fboxsep}{#1}\par\noindent\begin{center}\colorbox{LightBlue}{\parbox{\linewidth-2\fboxsep}{#2}}\end{center}\setlength{\fboxsep}{3pt}}
 
 %% COVER PAGE
 \makeatletter
 \renewcommand\maketitle{\vfill
 \begin{flushleft}\vspace*{3cm}{\textbf{\Huge\color{black}\@title}} \\[0.7cm]\ifdefempty{\@subtitle}{}{\textbf{\LARGE\color{gray}\@subtitle}}\end{flushleft}
 \begin{flushright}\vspace*{1cm}\textbf{\@author\\}\vspace*{1cm}
-\ifdefempty{\@supercom}{}{{\bf\textcolor{gray}{Supervisory committee\\}}\textbf{\@supercom\\}\vspace*{1cm}}
-\ifdefempty{\@jury}{}{{\bf\textcolor{gray}{Jury\\}}\textbf{\@jury\\}\vspace*{1cm}}
 \ifdefempty{\@promoter}{}{{\bf\textcolor{gray}{Promoter\\}}\textbf{\@professor\\}\vspace*{1cm}}
 \ifdefempty{\@promoters}{}{{\bf\textcolor{gray}{Promoters\\}}\textbf{\@professors\\}\vspace*{1cm}}
+\ifdefempty{\@supercom}{}{{\bf\textcolor{gray}{Supervisory committee\\}}\textbf{\@supercom\\}\vspace*{1cm}}
+\ifdefempty{\@jury}{}{{\bf\textcolor{gray}{Jury\\}}\textbf{\@jury\\}\vspace*{1cm}}
 \ifdefempty{\@assessors}{}{{\bf\textcolor{gray}{Assessors\\}}\textbf{\@assessors\\}\vspace*{1cm}}
 \ifdefempty{\@professor}{}{{\bf\textcolor{gray}{Professor\\}}\textbf{\@professor\\}\vspace*{1cm}}
 \ifdefempty{\@professors}{}{{\bf\textcolor{gray}{Professors\\}}\textbf{\@professors\\}\vspace*{1cm}}
