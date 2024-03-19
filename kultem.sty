@@ -1,7 +1,7 @@
 %% This is the file `kultem.sty',
 %% a non-official KU Leuven template.
 %%
-%% Copyright (C) 2021 by Henri De Plaen, KU Leuven.
+%% Copyright (C) 2024 by Henri De Plaen, KU Leuven.
 %%
 %% This file may be distributed and/or modified under the conditions of
 %% the LaTeX Project Public License, either version 1.2 of this license
@@ -17,7 +17,7 @@
 %% not covered by the license above.
 
 \NeedsTeXFormat{LaTeX2e}[1994/06/01]
-\ProvidesPackage{kultem}[2021/02/15 KU Leuven style (v0.1)]
+\ProvidesPackage{kultem}[2024/01/18 KU Leuven style (v0.3)]
 
 \let\myDate\date
 \newcommand\GoodBye[1][\bfseries]{{#1Good Bye}}
@@ -41,6 +41,7 @@
 
 %%GENERAL
 \DeclareBoolOption[false]{binding}
+\DeclareBoolOption[false]{sedes}
 \ProcessKeyvalOptions{kultem}\relax
 
 \ifkultem@binding
@@ -55,13 +56,31 @@ bindingoffset=\kultem@bindingoffset,%
 left=20mm,%
 right=20mm,%
 top=35mm,%
-bottom=20mm,%
 heightrounded}
 \setlength{\fboxsep}{3pt}
 
+%% SEDES WATERMARK
+\ifkultem@sedes
+\RequirePackage{silence}
+\WarningsOff[everypage] % Suppress warnings related to package everypage
+\RequirePackage[pages=some]{background}
+\backgroundsetup{
+scale=1.7,
+angle=0,
+opacity=0.1,
+hshift=70,
+vshift=-120,
+contents={%
+  \includesvg{img/kuleuven-sedes.svg}
+  }%
+}%
+\fi
+
+
+%% OPTIONS
 \newcommand*{\subtitle}[1]{\gdef\@subtitle{#1}}\newcommand*{\@subtitle}{}%
-\newcommand*{\assitant}[1]{\gdef\@assistant{#1}}\newcommand*{\@assistant}{}%
-\newcommand*{\assitants}[1]{\gdef\@assistants{#1}}\newcommand*{\@assistants}{}%
+\newcommand*{\assistant}[1]{\gdef\@assistant{#1}}\newcommand*{\@assistant}{}%
+\newcommand*{\assistants}[1]{\gdef\@assistants{#1}}\newcommand*{\@assistants}{}%
 \newcommand*{\professor}[1]{\gdef\@professor{#1}}\newcommand*{\@professor}{}%
 \newcommand*{\professors}[1]{\gdef\@professors{#1}}\newcommand*{\@professors}{}%
 \newcommand*{\supercom}[1]{\gdef\@supercom{#1}}\newcommand*{\@supercom}{}%
@@ -69,7 +88,14 @@ heightrounded}
 \newcommand*{\promoters}[1]{\gdef\@promoters{#1}}\newcommand*{\@promoters}{}%
 \newcommand*{\jury}[1]{\gdef\@jury{#1}}\newcommand*{\@jury}{}%
 \newcommand*{\assessors}[1]{\gdef\@assessors{#1}}\newcommand*{\@assessors}{}%
-\def\figurename{\textsc{Figure}}\def\tablename{\textsc{Table}}\setlength\parindent{0pt}
+\newcommand*{\coverimage}[1]{\gdef\@coverimage{#1}}\newcommand*{\@coverimage}{}%
+\newcommand*{\coversvg}[1]{\gdef\@coversvg{#1}}\newcommand*{\@coversvg}{}%
+\newcommand*{\coverinput}[1]{\gdef\@coverinput{#1}}\newcommand*{\@coverinput}{}%
+
+\def\figurename{\textsc{Figure}}
+\def\tablename{\textsc{Table}}
+\def\algorithmname{\textsc{Algorithm}}
+\setlength\parindent{0pt}
 
 
 %% KU LEUVEN COLORS
@@ -99,7 +125,7 @@ heightrounded}
 \fancyhead[C]{\begin{tikzpicture}[overlay, remember picture]
     \fill[Blue2] (current page.north west) rectangle ($(current page.north east)+(0,-1in)$);
     \node[anchor=north west, text=white, font=\Large, minimum size=1in, inner xsep=5mm, align=left] at (current page.north west) {\bf{\MakeUppercase{\@title}}\\\@subtitle};
-    \node[anchor=north east, minimum size=1in, inner xsep=5mm] at (current page.north east) {\includesvg[scale=1]{kuleuven-logo.svg}};\end{tikzpicture}}
+    \node[anchor=north east, minimum size=1in, inner xsep=5mm] at (current page.north east) {\includesvg[scale=1]{img/kuleuven-logo.svg}};\end{tikzpicture}}
 \fancyfoot[C]{\begin{tikzpicture}[overlay, remember picture]%
     \fill[Blue2] (current page.south west) rectangle ($(current page.south east)+(0,.5in)$);
     \node[anchor=south west, text=white, font=\large, minimum size=.5in, inner xsep=5mm] at (current page.south west) {\leftmark};
@@ -115,19 +141,27 @@ heightrounded}
 
 %% COVER PAGE
 \makeatletter
-\renewcommand\maketitle{\vfill
-\begin{flushleft}\vspace*{3cm}{\textbf{\Huge\color{black}\@title}} \\[0.7cm]\ifdefempty{\@subtitle}{}{\textbf{\LARGE\color{gray}\@subtitle}}\end{flushleft}
+\renewcommand\maketitle{%
+\ifkultem@sedes%
+\BgThispage%
+\fi%
+\vfill%
+\begin{flushleft}\vspace*{3cm}{\textbf{\Huge\color{black}\@title}} \\[0.7cm]\ifdefempty{\@subtitle}{}{\textbf{\LARGE\color{gray}\@subtitle}}\end{flushleft}%
 \begin{flushright}\vspace*{1cm}\textbf{\@author\\}\vspace*{1cm}
-\ifdefempty{\@promoter}{}{{\bf\textcolor{gray}{Promoter\\}}\textbf{\@professor\\}\vspace*{1cm}}
-\ifdefempty{\@promoters}{}{{\bf\textcolor{gray}{Promoters\\}}\textbf{\@professors\\}\vspace*{1cm}}
-\ifdefempty{\@supercom}{}{{\bf\textcolor{gray}{Supervisory committee\\}}\textbf{\@supercom\\}\vspace*{1cm}}
-\ifdefempty{\@jury}{}{{\bf\textcolor{gray}{Jury\\}}\textbf{\@jury\\}\vspace*{1cm}}
-\ifdefempty{\@assessors}{}{{\bf\textcolor{gray}{Assessors\\}}\textbf{\@assessors\\}\vspace*{1cm}}
-\ifdefempty{\@professor}{}{{\bf\textcolor{gray}{Professor\\}}\textbf{\@professor\\}\vspace*{1cm}}
-\ifdefempty{\@professors}{}{{\bf\textcolor{gray}{Professors\\}}\textbf{\@professors\\}\vspace*{1cm}}
-\ifdefempty{\@assistant}{}{{\bf\textcolor{gray}{Assistant\\}}\textbf{\@assistant\\}\vspace*{1cm}}
-\ifdefempty{\@assistants}{}{{\bf\textcolor{gray}{Assistants\\}}\textbf{\@assistants\\}\vspace*{1cm}}
-\end{flushright}\vfill\begin{center}\@date\end{center}
+\ifdefempty{\@promoter}{}{{\bf\textcolor{gray}{Promoter\\}}\textbf{\@professor\\}\vspace*{1cm}}%
+\ifdefempty{\@promoters}{}{{\bf\textcolor{gray}{Promoters\\}}\textbf{\@professors\\}\vspace*{1cm}}%
+\ifdefempty{\@supercom}{}{{\bf\textcolor{gray}{Supervisory committee\\}}\textbf{\@supercom\\}\vspace*{1cm}}%
+\ifdefempty{\@jury}{}{{\bf\textcolor{gray}{Jury\\}}\textbf{\@jury\\}\vspace*{1cm}}%
+\ifdefempty{\@assessors}{}{{\bf\textcolor{gray}{Assessors\\}}\textbf{\@assessors\\}\vspace*{1cm}}%
+\ifdefempty{\@professor}{}{{\bf\textcolor{gray}{Professor\\}}\textbf{\@professor\\}\vspace*{1cm}}%
+\ifdefempty{\@professors}{}{{\bf\textcolor{gray}{Professors\\}}\textbf{\@professors\\}\vspace*{1cm}}%
+\ifdefempty{\@assistant}{}{{\bf\textcolor{gray}{Assistant\\}}\textbf{\@assistant\\}\vspace*{1cm}}%
+\ifdefempty{\@assistants}{}{{\bf\textcolor{gray}{Assistants\\}}\textbf{\@assistants\\}\vspace*{1cm}}%
+\end{flushright}\vfill%
+\ifdefempty{\@coverimage}{}{\begin{center}\includegraphics[width=0.7\textwidth]{\@coverimage}\end{center}\vfill}%
+\ifdefempty{\@coversvg}{}{\begin{center}\includesvg[width=0.7\textwidth]{\@coversvg}\end{center}\vfill}%
+\ifdefempty{\@coverinput}{}{\begin{center}\input{\@coverinput}\end{center}\vfill}%
+\begin{center}\@date\end{center}%
 }\makeatother
 
 \endinput

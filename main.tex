@@ -1,6 +1,6 @@
 \documentclass[oneside,a4paper,11pt,explicit]{book}
 \usepackage[utf8]{inputenc}
-\usepackage{kultem}
+\usepackage[sedes]{kultem}
 \usepackage[english]{babel}
 % \usepackage[dutch]{babel}
 
@@ -49,7 +49,7 @@ with $k=0.1$ and $B=11$ and answer the following questions
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\textwidth]{./arenberg.jpg}
+    \includegraphics[width=\textwidth]{img/arenberg.jpg}
     \caption{The castle of Arenberg in Heverlee, with windows corrected.}
     \label{fig:example}
 \end{figure}
@@ -57,6 +57,11 @@ with $k=0.1$ and $B=11$ and answer the following questions
 \chapter{Short Manual}
 \lstset{basicstyle=\ttfamily,breaklines=true}
 We now present some commands that you can use. If you experience any bugs, don't hesitate to report them on the corresponding repository: \url{https://github.com/hdeplaen/kultem}. If you can fix the bug or just want to improve the work and add a new functionality, don't hesitate to contribute with a push request.
+\section{Package}
+To use the package, it suffices to include \verb|\usepackage[<options>]{kultem}|. The package admits the following option
+\begin{itemize}
+    \item \verb|sedes|: prints the \emph{Sedes Sapientiae} of the university as watermark on the title page.
+\end{itemize}
 
 \section{Title Page}
 The available title options are (from top to bottom):
@@ -74,6 +79,9 @@ The available title options are (from top to bottom):
     \item \verb|assistant{<text>}|: assistant (singular);
     \item \verb|assistants{<text>}|: assistants (seperate the names with a comma or a \verb|\\| if you want them to be written on different lines);
     \item \verb|\date{<text>}|: the date (one may consider the command \verb|\today| for an automatic filling).
+    \item \verb|\coverimage{<path_to_image>}|: this prints an image on the cover (to avoid a heavy looking title page, we do not recommend to combine it with the package option \verb|sedes| or the command \verb|\coversvg| and \verb|coverinput|);
+    \item \verb|\coversvg{<path_to_svg>}|: similar to the previous option, but prints an svg on the cover instead of an image (to avoid a heavy looking title page, we do not recommend to combine it with the package option \verb|sedes| or the command \verb|\coverimage| and \verb|coverinput|);
+    \item \verb|\converinput{<path_to_file>}|: similar to the previous option, but allows to directly input a block of code instead of an image, \emph{e.g.} a TikZ picture (to avoid a heavy looking title page, we do not recommend to combine it with the package option \verb|sedes| or the command \verb|\coverimage| and \verb|\coversvg|).
 \end{itemize}
 
 \section{Questions and Tasks}
